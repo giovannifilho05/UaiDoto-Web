@@ -9,7 +9,7 @@ export default function Routers() {
         <Router>
             <Routes>
                 {/* <Route exact path="/" element={<Home />} /> */}
-                <Route exact path="/login" element={<Login />} />
+                <Route exact path="/" element={<Login />} />
                 {/* <Route exact path="/recovery-password" element={<RecoveryPassword />} /> */}
                 <Route path="*" element={<NotFound />} />
             </Routes>
