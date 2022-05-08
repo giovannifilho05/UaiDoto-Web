@@ -1,8 +1,7 @@
-import axios from "axios";
+import api from "./api";
 
 export default async function submitLogin(email, password) {
-  axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-  return axios.post('http://localhost:8080/login', {
+  return api.post('/login', {
     email, password
   });
 }

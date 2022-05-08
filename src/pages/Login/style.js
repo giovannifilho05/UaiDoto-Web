@@ -6,7 +6,6 @@ export const Container = styled.div`
 `;
 
 export const Content = styled.div`
-    /* background-color: #04D361; */
     border-radius: 0.5rem;
 `;
 
