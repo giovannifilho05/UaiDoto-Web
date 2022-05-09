@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import Input from "../Input";
+import toast, { Toaster } from 'react-hot-toast';
+
+import { onlyNumber, testRegex } from "../../../utils/fieldTreatment";
+
+const notify = (msg) => toast(msg);
 
 export default function AddressForm({ initialData, setData, handleStep }) {
   const [zipCode, setZipCode] = useState(initialData?.address?.zipCode || '');
@@ -9,13 +14,32 @@ export default function AddressForm({ initialData, setData, handleStep }) {
   const [complement, setComplement] = useState(initialData?.address?.complement || '');
 
   function updateParent() {
-    setData({ address: {zipCode, city, street, number, complement} });
+    setData({ address: {
+      zipCode: zipCode, 
+      city, 
+      street, 
+      number, 
+      complement
+    } });
     handleStep(1);
+  }
+
+  function handleNext() {
+    if ( onlyNumber(zipCode).length < 8) {
+      notify('CEP incorreto');
+    } else if (!city || !street || !number || !complement) {
+      notify('Preencha todos campos');
+     } else {
+      updateParent();
+    }
   }
 
   return (
     <div className="row">
+      <Toaster />
       <Input
+        mask="99999-999"
+        minlength="9"
         id="zipCode"
         label="CEP"
         type="text"
@@ -56,7 +80,7 @@ export default function AddressForm({ initialData, setData, handleStep }) {
         </button>
 
         <button
-          onClick={updateParent}
+          onClick={handleNext}
           className="btn btn-primary ms-auto"
           type="button"
         >

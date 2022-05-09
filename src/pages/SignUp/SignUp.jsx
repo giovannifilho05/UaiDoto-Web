@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
+
 import { Container, Content } from "./style";
 import {
   AddressForm,
@@ -7,6 +9,8 @@ import {
 } from "../../components/Form/SignUpForm";
 
 import signUp from "../../api/signUp";
+
+const notify = (msg) => toast(msg);
 
 export default function SignUp() {
   const [step, setStep] = useState(0);
@@ -18,25 +22,30 @@ export default function SignUp() {
 
   function handleStep(stepDirection) {
     if (typeof stepDirection === "number") {
-      if (step + stepDirection >= 0) {  
+      if (step + stepDirection >= 0) {
         setStep(step + stepDirection);
       }
-    } 
+    }
   }
 
 
   function handleSubmit() {
-    
+
     signUp(formData)
-      .then((success)=> {
+      .then((success) => {
         console.log(success);
 
-        if(success.status === 201) {
-          alert("Cadastro realizado com sucesso!");
+        if (success.status === 201) {
+          // alert("Cadastro realizado com sucesso!");
+          notify("Cadastro realizado com sucesso!")
+
           window.location.href = "/";
         }
       })
-      .catch((err)=> console.log(err))
+      .catch((err) => {
+        notify("Algo deu errado :(");
+        console.log(err)
+      })
   }
 
   return (
@@ -49,11 +58,12 @@ export default function SignUp() {
             </div>
 
             <div className="row">
+              <Toaster />
               <form className="w-100">
                 {step === 0 && (
-                  <PersonalDataForm 
-                  initialData={formData} 
-                  setData={handleData} handleStep={handleStep} />
+                  <PersonalDataForm
+                    initialData={formData}
+                    setData={handleData} handleStep={handleStep} />
                 )}
 
                 {step === 1 && (
@@ -61,13 +71,13 @@ export default function SignUp() {
                 )}
 
                 {step === 2 && (
-                  <WorkDaysForm initialData={formData}  setData={handleData} handleStep={handleStep} handleSubmit={handleSubmit} />
+                  <WorkDaysForm initialData={formData} setData={handleData} handleStep={handleStep} handleSubmit={handleSubmit} />
                 )}
               </form>
             </div>
           </div>
         </div>
       </Content>
-    </Container> 
+    </Container>
   );
 }

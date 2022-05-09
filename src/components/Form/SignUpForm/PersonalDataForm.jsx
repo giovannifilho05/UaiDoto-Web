@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
+
+import { onlyNumber, testRegex } from "../../../utils/fieldTreatment";
 
 import Input from "../Input";
 import Select from "../Select";
 
-function testRegex(regex, input) {
-  return regex.test(input);
-}
+const notify = (msg) => toast(msg);
 
 export default function PersonalDataForm({ initialData, setData, handleStep }) {
   const [email, setEmail] = useState(initialData?.email || '');
@@ -17,28 +18,30 @@ export default function PersonalDataForm({ initialData, setData, handleStep }) {
   const [phone, setPhone] = useState(initialData.phone || '');
   const [crm, setCrm] = useState(initialData?.crm || '');
 
-  // function handleNext() {
-  //   if(testRegex(/(\w|\d)+@\w+\.\w+/i, email) &&
-  //     testRegex(/[a-zA-Z]+/i, name) &&
-  //     testRegex(/\(\d{2}\) (\d )?\d{4}-\d{4}/, phone) &&
-  //     testRegex(/\w+@\w+\.\w+/i, email) &&
-  //     testRegex(/\w+@\w+\.\w+/i, email) &&
-  //     testRegex(/\w+@\w+\.\w+/i, email) &&
-  //     testRegex(/\w+@\w+\.\w+/i, email)
-  //   ) {
-
-  //   }
-  // }
-
   function updateParent() {
-    setData({ email, password, name, gender, phone, crm });
+    setData({ email, password, name, gender, phone: onlyNumber(phone), crm });
     handleStep(1);
   }
 
-  // s
+  function handleNext() {
+    if (!testRegex(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi, email)) {
+      notify('Por favor, verifique o e-mail');
+    } else if (password !== confirmPassword) {
+      notify('As senhas não são compatível');
+    } else if (!name || !gender) {
+      notify('Preencha todos campos');
+    } else if (onlyNumber(phone).length < 10) {
+      notify('Telefone incompleto.');
+    } else if (crm.length < 7) {
+      notify('CRM incompleto.');
+    } else {
+      updateParent();
+    }
+  }
 
   return (
     <div className="row">
+      <Toaster />
       <Input
         id="email"
         label="E-mail"
@@ -78,7 +81,7 @@ export default function PersonalDataForm({ initialData, setData, handleStep }) {
       </Select>
 
       <Input
-        // mask={ [/\(\d{2}\) \d?\d{4}-\d{4}/] }
+        mask="(99) 999999999"
         id="phone"
         label="Telefone"
         type="tel"
@@ -87,7 +90,7 @@ export default function PersonalDataForm({ initialData, setData, handleStep }) {
       />
 
       <Input
-        // mask="99999-9/aa"
+        // mask="aa99999"
         id="crm"
         label="CRM"
         value={crm}
@@ -100,7 +103,7 @@ export default function PersonalDataForm({ initialData, setData, handleStep }) {
         </NavLink>
 
         <button
-          onClick={updateParent}
+          onClick={handleNext}
           className="btn btn-primary ms-auto"
           type="button"
         >
