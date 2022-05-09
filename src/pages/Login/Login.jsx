@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
-import { Container, Content, CoverPage } from "./style";
 import submitLogin from "../../api/submitLogin";
 import { FormButton, Input } from "../../components/Form";
+import { Container, Content, Logo, CoverPage } from "./style";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -14,43 +17,56 @@ export default function Login() {
     submitLogin(email, password)
       .then((result) => {
         console.log(result);
-        localStorage["token"] = result.data.token;
-        localStorage["refreshToken"] = result.data.refreshToken;
+        sessionStorage["token"] = result.data.token;
+        sessionStorage["refreshToken"] = result.data.refreshToken;
+
+        navigate("/dashboard");
       })
       .catch((result) => {
         console.log(result);
-      })
+      });
   }
 
   return (
     <Container className="d-flex">
-      <Content className="m-auto p-3 card flex-row col-6">
-        <CoverPage className="d-block me-3">aaaaaaaaaaaaaaaaaaaaaaaaaaaa</CoverPage>
-        <form className="w-100" onSubmit={ handleSubmit }>
-          <Input 
-            id="email" 
-            label="E-mail" 
-            type="email" 
-            value={ email } 
-            onChange={ (e) => setEmail(e.target.value) }
+      <Content className="m-auto p-3 card row col-6 flex-row">
+        <CoverPage className="d-block col-12 col-md-4">
+          <Logo />
+        </CoverPage>
+        <form className="my-auto col-12 col-md-8" onSubmit={handleSubmit}>
+          <Input
+            id="email"
+            label="E-mail"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          
+
           <Input
             label="Senha"
             id="password"
             type="password"
-            className="mt-2" 
-            value={ password }
-            onChange={ (e) => setPassword(e.target.value) }
+            className="mt-2"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
-          <FormButton 
-            divClass="mt-2 d-flex" 
-            btnClass="btn-primary ms-auto" 
-            type="submit"
-          >
-            Entrar
-          </FormButton>
+          <div className="row mt-2">
+            <div className="col-8 d-flex">
+              <NavLink to="/sign-up" className="link-secondary my-auto">
+                Não possui usuário? Cadastre-se
+              </NavLink>
+            </div>
+            <div className="col">
+              <FormButton
+                divClass="mt-2 d-flex"
+                btnClass="btn-primary ms-auto"
+                type="submit"
+              >
+                Entrar
+              </FormButton>
+            </div>
+          </div>
         </form>
       </Content>
     </Container>

@@ -5,7 +5,7 @@ const baseURL = "http://localhost:8080";
 const api = axios.create({
   baseURL: baseURL,
   headers: {
-    "Authorization": "Bearer " + localStorage.getItem("token") || null
+    "Authorization": "Bearer " + sessionStorage.getItem("token") || null
   }
 });
 
@@ -15,12 +15,12 @@ api.interceptors.response.use(
       if (error.response.status === 401) {
         axios.post(`${baseURL}/users/refresh-token`, null, {
           headers: {
-            "Authorization": "Bearer " + localStorage.getItem("refreshToken")
+            "Authorization": "Bearer " + sessionStorage.getItem("refreshToken")
           }
         })
         .then(response => {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("refreshToken", response.data.refreshToken);
+          sessionStorage.setItem("token", response.data.token);
+          sessionStorage.setItem("refreshToken", response.data.refreshToken);
 
           error.config.headers["Authorization"] = "Bearer " + response.data.token;
 
@@ -28,8 +28,8 @@ api.interceptors.response.use(
         })
         .catch(err => {
           console.log(err);
-          localStorage.removeItem("token");
-          localStorage.removeItem("refreshToken");
+          sessionStorage.removeItem("token");
+          sessionStorage.removeItem("refreshToken");
 
           alert("Suas credenciais expiraram, faça login novamente.");
           window.location.href = "/";

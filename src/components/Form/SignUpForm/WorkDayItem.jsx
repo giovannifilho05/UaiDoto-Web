@@ -3,13 +3,13 @@ import Input from "../Input";
 import Select from "../Select";
 
 export default function WorkDayItem({ addDay }) {
-  const [day, setDay] = useState('');
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
+  const [day, setDay] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
 
   const handlerBtn = () => {
-    addDay({ day: day, start: start, end: end });
-  }
+    addDay({ day: day, workHours: { start: start, end: end } });
+  };
 
   return (
     <div className="row">

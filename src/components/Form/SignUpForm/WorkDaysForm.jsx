@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import WorkDayItem from "./WorkDayItem";
 
-export default function WorkDaysForm() {
-  const [workDays, setWorkDays] = useState([]);
+export default function WorkDaysForm({
+  initialData,
+  setData,
+  handleStep,
+  handleSubmit,
+}) {
+  const [workDays, setWorkDays] = useState(initialData?.workDays || []);
   const days = [
     "Domingo",
     "Segunda-feira",
@@ -12,16 +17,24 @@ export default function WorkDaysForm() {
     "Sexta-feira",
     "Sábado",
   ];
+
   const addDay = (data) => {
-    console.log(data);
     setWorkDays([...workDays, data]);
+    setData({ "workDays": [...workDays, data]});
   };
+
 
   const removeDay = (index) => {
     const newWorkDays = [...workDays];
     newWorkDays.splice(index, 1);
     setWorkDays(newWorkDays);
+    setData({ "workDays": newWorkDays});
   };
+
+  function updateParent() {
+    setData([{ workDays }]);
+    handleSubmit();
+  }
 
   return (
     <div className="row">
@@ -41,8 +54,8 @@ export default function WorkDaysForm() {
               {workDays.map((workDay, index) => (
                 <tr key={index}>
                   <td>{days[workDay.day]}</td>
-                  <td>{workDay.start}</td>
-                  <td>{workDay.end}</td>
+                  <td>{workDay.workHours.start}</td>
+                  <td>{workDay.workHours.end}</td>
                   <td>
                     <button
                       type="button"
@@ -57,6 +70,24 @@ export default function WorkDaysForm() {
             </tbody>
           </table>
         )}
+
+        <div className="mt-3 form-group d-flex">
+          <button
+            onClick={() => handleStep(-1)}
+            className="btn btn-outline-dark"
+            type="button"
+          >
+            Voltar
+          </button>
+
+          <button
+            onClick={updateParent}
+            className="btn btn-success ms-auto"
+            type="button"
+          >
+            Enviar
+          </button>
+        </div>
       </div>
     </div>
   );
