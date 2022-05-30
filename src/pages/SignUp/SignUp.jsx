@@ -63,7 +63,8 @@ export default function SignUp() {
                 {step === 0 && (
                   <PersonalDataForm
                     initialData={formData}
-                    setData={handleData} handleStep={handleStep} />
+                    setData={handleData} 
+                    handleStep={handleStep} />
                 )}
 
                 {step === 1 && (

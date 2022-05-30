@@ -8,12 +8,13 @@ import { testRegex } from "../../utils/fieldTreatment";
 
 import { FormButton, Input } from "../../components/Form";
 import { Container, Content, Logo, CoverPage } from "./style";
+import { setStoreData } from "../../utils/token";
 
 const notify = (msg) => toast(msg);
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("medico@medico.com");
+  const [password, setPassword] = useState("1234");
 
   const navigate = useNavigate();
 
@@ -27,14 +28,20 @@ export default function Login() {
     } else {
       submitLogin(email, password)
         .then((result) => {
-          console.log(result);
-          sessionStorage["token"] = result.data.token;
-          sessionStorage["refreshToken"] = result.data.refreshToken;
-  
-          navigate("/dashboard");
+          if (result.status === 200) {
+            return result.data
+          } else {
+            throw new Error("Usuário ou senha inválidos");
+          }
         })
-        .catch((result) => {
-          console.log(result);
+        .then(({ token, refreshToken }) => {
+          setStoreData({name: process.env.TOKEN_NAME, token})
+          setStoreData({name: process.env.REFRESH_TOKEN_NAME, refreshToken})
+
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log(error);
         });
     }
 
