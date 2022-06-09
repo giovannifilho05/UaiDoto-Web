@@ -2,12 +2,12 @@ import axios from "axios";
 
 import { setStoreData, getStoreData, removeStoreData } from '../utils/token'
 
-const baseURL = "http://localhost:8080";
+const baseURL = "https://uai-doto-backend.herokuapp.com";
 
 const api = axios.create({
   baseURL: baseURL,
   headers: {
-    "Authorization": "Bearer " + getStoreData(process.env.TOKEN_NAME) || null
+    "Authorization": "Bearer " + getStoreData('token') || null
   }
 });
 
@@ -17,29 +17,29 @@ api.interceptors.response.use(
     if (error.response.status === 401) {
       axios.post(`${baseURL}/users/refresh-token`, null, {
         headers: {
-          "Authorization": `Bearer ${getStoreData(process.env.TOKEN_NAME)}` ?? null
+          "Authorization": `Bearer ${getStoreData('refreshToken')}` ?? null
         }
       })
         .then(response => response.data)
         .then(({ token, refreshToken }) => {
-          setStoreData({name: process.env.TOKEN_NAME, token})
-          setStoreData({name: process.env.REFRESH_TOKEN_NAME, refreshToken})
+          setStoreData({name: 'token', token})
+          setStoreData({name: 'refreshToken', refreshToken})
 
-          error.config.headers["Authorization"] = `Bearer ${token}`;
+          error.config.headers["Authorization"] = `Bearer ${token}`
 
           return api.request(error.config);
         })
         .catch(err => {
-          console.log(err);
-          removeStoreData(process.env.TOKEN_NAME)
-          removeStoreData(process.env.REFRESH_TOKEN_NAME)
+          console.log(err)
+          removeStoreData('token')
+          removeStoreData('refreshToken')
 
           alert("Suas credenciais expiraram, faça login novamente.")
-          window.location.href = "/";
+          window.location.href = "/signIn";
         });
     }
-    console.log(error);
-    return Promise.reject(error);
+    console.log(error)
+    return Promise.reject(error)
   }
 )
 

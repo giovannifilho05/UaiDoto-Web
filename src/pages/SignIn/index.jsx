@@ -12,7 +12,7 @@ import { setStoreData } from "../../utils/token";
 
 const notify = (msg) => toast(msg);
 
-export default function Login() {
+export default function SignIn() {
   const [email, setEmail] = useState("medico@medico.com");
   const [password, setPassword] = useState("1234");
 
@@ -34,11 +34,11 @@ export default function Login() {
             throw new Error("Usuário ou senha inválidos");
           }
         })
-        .then(({ token, refreshToken }) => {
-          setStoreData({name: process.env.TOKEN_NAME, token})
-          setStoreData({name: process.env.REFRESH_TOKEN_NAME, refreshToken})
+        .then(({ token, refresh_token: refreshToken }) => {
+          setStoreData({ name: 'token', value: token })
+          setStoreData({ name: 'refreshToken', value: refreshToken })
 
-          navigate("/");
+          navigate("/")
         })
         .catch((error) => {
           console.log(error);
@@ -74,7 +74,7 @@ export default function Login() {
 
           <div className="row mt-2">
             <div className="col-8 d-flex">
-              <NavLink to="/sign-up" className="link-secondary my-auto">
+              <NavLink to="/signUp" className="link-secondary my-auto">
                 Não possui usuário? Cadastre-se
               </NavLink>
             </div>

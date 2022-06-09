@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "../Input";
 import toast, { Toaster } from 'react-hot-toast';
 
-import { onlyNumber, testRegex } from "../../../utils/fieldTreatment";
+import { onlyNumber } from "../../../utils/fieldTreatment";
 
-const notify = (msg) => toast(msg);
+const notify = (msg) => toast.error(msg);
 
 export default function AddressForm({ initialData, setData, handleStep }) {
   const [zipCode, setZipCode] = useState(initialData?.address?.zipCode || '');
@@ -14,32 +14,50 @@ export default function AddressForm({ initialData, setData, handleStep }) {
   const [complement, setComplement] = useState(initialData?.address?.complement || '');
 
   function updateParent() {
-    setData({ address: {
-      zipCode: zipCode, 
-      city, 
-      street, 
-      number, 
-      complement
-    } });
+    setData({
+      address: {
+        zipCode,
+        city,
+        street,
+        number,
+        complement
+      }
+    });
     handleStep(1);
   }
 
   function handleNext() {
-    if ( onlyNumber(zipCode).length < 8) {
+    if (onlyNumber(zipCode).length < 8) {
       notify('CEP incorreto');
     } else if (!city || !street || !number || !complement) {
       notify('Preencha todos campos');
-     } else {
+    } else {
       updateParent();
     }
   }
+
+  useEffect(() => {
+    const zipCodeReplaced = onlyNumber(zipCode || '');
+    if (zipCodeReplaced.length === 8) {
+      fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.erro) {
+            notify('CEP não encontrado. Tente novamente.');
+          } else {
+            setCity(data.localidade);
+            setStreet(data.logradouro);
+            setComplement(data.complemento);
+          }
+        })
+    }
+  }, [zipCode])
 
   return (
     <div className="row">
       <Toaster />
       <Input
         mask="99999-999"
-        minlength="9"
         id="zipCode"
         label="CEP"
         type="text"
@@ -52,6 +70,7 @@ export default function AddressForm({ initialData, setData, handleStep }) {
         type="text"
         value={city}
         onChange={(e) => setCity(e.target.value)}
+        disabled={true}
       />
       <Input
         id="street"

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 
+import getSpecialties from "../../../api/doctor/specialty";
 import { onlyNumber, testRegex } from "../../../utils/fieldTreatment";
 
 import Input from "../Input";
@@ -17,9 +18,21 @@ export default function PersonalDataForm({ initialData, setData, handleStep }) {
   const [gender, setGender] = useState(initialData?.gender || '');
   const [phone, setPhone] = useState(initialData.phone || '');
   const [crm, setCrm] = useState(initialData?.crm || '');
+  const [specialty, setSpecialty] = useState('');
+  const [specialties, setSpecialties] = useState([]);
+
+  useEffect(() => {
+    getSpecialties()
+    .then(specialties => {
+      const ranamedSpecialties = specialties.map(specialty => ({ label: specialty.specialty, value: specialty.specialty }))
+      setSpecialties(ranamedSpecialties)
+      })
+      .catch(err => console.error(err))
+
+  }, [])
 
   function updateParent() {
-    setData({ email, password, name, gender, phone: onlyNumber(phone), crm });
+    setData({ email, password, name, gender, phone: onlyNumber(phone), crm, specialty: specialty });
     handleStep(1);
   }
 
@@ -90,12 +103,24 @@ export default function PersonalDataForm({ initialData, setData, handleStep }) {
       />
 
       <Input
-        // mask="aa99999"
         id="crm"
         label="CRM"
         value={crm}
         onChange={(e) => setCrm(e.target.value)}
       />
+
+      <Select
+        id="specialty"
+        label="Especialidade"
+        value={specialty}
+        onChange={(e) => setSpecialty(e.target.value)}
+      >
+        {specialties &&
+          specialties.map(specialty => (
+            <option key={specialty.value} value={specialty.value}>{specialty.label}</option>
+          ))
+        }
+      </Select>
 
       <div className="mt-3 form-group d-flex">
         <NavLink to="/" className="link-secondary my-auto">

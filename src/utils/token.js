@@ -1,7 +1,6 @@
 export const setStoreData = ({ name, value }) => {
   try {
-    const jsonToken = JSON.stringify(value)
-    localStorage.setItem(name, jsonToken)
+    localStorage.setItem(name, value)
   } catch (error) {
     return error
   }
