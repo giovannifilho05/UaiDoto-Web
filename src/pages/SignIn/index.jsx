@@ -8,7 +8,6 @@ import { testRegex } from "../../utils/fieldTreatment";
 
 import { FormButton, Input } from "../../components/Form";
 import { Container, Content, Logo, CoverPage } from "./style";
-import { setStoreData } from "../../utils/token";
 
 const notify = (msg) => toast(msg);
 
@@ -35,8 +34,8 @@ export default function SignIn() {
           }
         })
         .then(({ token, refresh_token: refreshToken }) => {
-          setStoreData({ name: 'token', value: token })
-          setStoreData({ name: 'refreshToken', value: refreshToken })
+          localStorage.setItem('token', token )
+          localStorage.setItem('refreshToken', refreshToken )
 
           navigate("/")
         })

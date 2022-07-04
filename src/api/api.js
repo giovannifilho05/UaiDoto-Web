@@ -1,13 +1,11 @@
 import axios from "axios";
 
-import { setStoreData, getStoreData, removeStoreData } from '../utils/token'
-
 const baseURL = "https://uai-doto-backend.herokuapp.com";
 
 const api = axios.create({
   baseURL: baseURL,
   headers: {
-    "Authorization": "Bearer " + getStoreData('token') || null
+    "Authorization": "Bearer " + localStorage.getItem('token') || null
   }
 });
 
@@ -17,13 +15,13 @@ api.interceptors.response.use(
     if (error.response.status === 401) {
       axios.post(`${baseURL}/users/refresh-token`, null, {
         headers: {
-          "Authorization": `Bearer ${getStoreData('refreshToken')}` ?? null
+          'Authorization': `Bearer ${localStorage.getItem('refreshToken')}`,
         }
       })
         .then(response => response.data)
         .then(({ token, refreshToken }) => {
-          setStoreData({name: 'token', token})
-          setStoreData({name: 'refreshToken', refreshToken})
+          localStorage.getItem({name: 'token', token})
+          localStorage.getItem({name: 'refreshToken', refreshToken})
 
           error.config.headers["Authorization"] = `Bearer ${token}`
 
@@ -31,8 +29,8 @@ api.interceptors.response.use(
         })
         .catch(err => {
           console.log(err)
-          removeStoreData('token')
-          removeStoreData('refreshToken')
+          localStorage.removeItem('token')
+          localStorage.removeItem('refreshToken')
 
           alert("Suas credenciais expiraram, faça login novamente.")
           window.location.href = "/signIn";

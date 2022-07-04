@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { removeStoreData } from "../../utils/token";
 import { Navbar } from "./style";
 
 export default function NavbarComponent() {
@@ -8,8 +7,8 @@ export default function NavbarComponent() {
 
   function logOut() {
     Promise.all([
-      removeStoreData('token'),
-      removeStoreData('refreshToken')
+      localStorage.removeItem('token'),
+      localStorage.removeItem('refreshToken')
     ])
       .then(() => navigate('/signIn'))
       .catch((err) => console.error(err))
