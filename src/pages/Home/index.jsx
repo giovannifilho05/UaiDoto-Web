@@ -76,8 +76,6 @@ export default function Home() {
           <div className="row">
             <h3>Consultas esperando confirmação:</h3>
 
-           <Modal />
-
             {
               appointmentsNotProcessed.length > 0 && appointmentsNotProcessed.filter((appointment) => !appointment.processed).map((appointment, index) => (
                 <ConfirmationCard
@@ -91,7 +89,7 @@ export default function Home() {
 
             {
               appointmentsNotProcessed.length === 0 &&
-              <h3>Nenhuma consulta encontrada.</h3>
+              <h5>Nenhuma consulta encontrada.</h5>
             }
 
           </div>
