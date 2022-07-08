@@ -6,7 +6,6 @@ import jwt_decode from "jwt-decode"
 import AppointmentsTable from "../../components/AppointmentsTable"
 import ConfirmationCard from "../../components/ConfirmationCard"
 import NavbarComponent from "../../components/Navbar"
-import Modal from "../../components/RegisterMedicines"
 
 import { Container, Content } from "./style"
 
@@ -59,8 +58,6 @@ export default function Home() {
     setRefreshAppointments(!refreshAppointments)
   }
 
-
-
   return (
     <>
       <NavbarComponent />
@@ -77,7 +74,7 @@ export default function Home() {
             <h3>Consultas esperando confirmação:</h3>
 
             {
-              appointmentsNotProcessed.length > 0 && appointmentsNotProcessed.filter((appointment) => !appointment.processed).map((appointment, index) => (
+              appointmentsNotProcessed && appointmentsNotProcessed.filter((appointment) => !appointment.processed).map((appointment, index) => (
                 <ConfirmationCard
                   key={index}
                   appointment={appointment}

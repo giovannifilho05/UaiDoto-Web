@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
 
-import { FormButton, Input, Select } from "../../components/Form";
-
-import { Container } from "./style";
-
+import handleAppointment from "../../api/doctor/handleAppointment";
 import MedicineItem from "./MedicineItem";
+
 
 const customStyles = {
   content: {
@@ -20,13 +18,14 @@ const customStyles = {
 
 Modal.setAppElement("#modal");
 
-export default function RegisterMedicines() {
+export default function RegisterMedicines({ appointment }) {
   const [medicines, setMedicines] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  
 
   useEffect(() => {
-    // Pega os medicamentos da base
+    if (appointment.medicines) {
+      setMedicines(appointment.medicines);
+    }
   }, []);
 
   function openModal() {
@@ -34,22 +33,27 @@ export default function RegisterMedicines() {
   }
 
   function afterOpenModal() {
-    
+
   }
 
   function closeModal() {
     setIsOpen(false);
   }
 
-  const addMedicine = (data) => {
+  function addMedicine(data) {
     setMedicines([...medicines, data]);
-  };
+  }
 
-  const removeMedicine = (index) => {
+  function handleSaveMedicines() {
+    handleAppointment(appointment, { medicines })
+      .then(() => closeModal())
+  }
+
+  function removeMedicine(index) {
     const newMedicine = [...medicines];
     newMedicine.splice(index, 1);
     setMedicines(newMedicine);
-  };
+  }
 
   return (
     <div>
@@ -57,16 +61,14 @@ export default function RegisterMedicines() {
         Ver Medicamentos
       </button>
       <Modal
-        isOpen={modalIsOpen}
+        isOpen={isOpen}
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="Example Modal"
       >
         <div className="row">
           <div className="form-group">
             <MedicineItem addMedicine={addMedicine} />
-
             <table className="table table-striped table-hover">
               <thead>
                 <tr>
@@ -81,11 +83,11 @@ export default function RegisterMedicines() {
               <tbody>
                 {medicines.map((medicine, index) => (
                   <tr key={index}>
-                    <td>{}</td>
-                    <td>{}</td>
-                    <td>{}</td>
-                    <td>{}</td>
-                    <td>{}</td>
+                    <td>{medicine.name}</td>
+                    <td>{medicine.dose}</td>
+                    <td>{medicine.gap}</td>
+                    <td>{medicine.doseQuantity}</td>
+                    <td>{medicine.notes}</td>
                     <td>
                       <button
                         type="button"
@@ -101,6 +103,12 @@ export default function RegisterMedicines() {
             </table>
           </div>
         </div>
+        <button
+          onClick={handleSaveMedicines}
+        >
+          Salvar
+        </button>
+
         <button onClick={closeModal}>close</button>
       </Modal>
     </div>
