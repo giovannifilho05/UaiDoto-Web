@@ -16,7 +16,11 @@ export default function ConfirmedAppointmentLine({ appointment, removeAppointmen
           className="btn btn-danger"
           title="Cancelar consulta"
           onClick={() => {
-            handleAppointment(appointment, { active: false })
+            handleAppointment(appointment, {
+              active: false,
+              finished: false,
+              observations: 'Cancelado pelo médico.'
+            })
               .then(() => notify("Consulta cancelada com sucesso!"))
               .then(removeAppointment)
           }}

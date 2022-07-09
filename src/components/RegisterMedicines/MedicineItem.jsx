@@ -5,7 +5,8 @@ import { Container } from "./style";
 
 export default function WorkDayItem({ addMedicine }) {
   const [name, setName] = useState("");
-  const [gap, setGap] = useState("");
+  const [gap, setGap] = useState(0);
+  const [firstDose, setFirstDose] = useState("");
   const [dose, setDose] = useState("");
   const [measurement, setMeasurement] = useState("");
   const [doseQuantity, setDoseQuantity] = useState("");
@@ -14,16 +15,20 @@ export default function WorkDayItem({ addMedicine }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!name || !gap || !dose) {
+    if (!name || gap <= 0 || !dose || !doseQuantity || !firstDose || !measurement) {
       alert("Preencha todos os campos");
     } else {
+      const lastTakenDose = new Date(firstDose)
+      lastTakenDose.setHours(lastTakenDose.getHours() - gap - 3)
+
       addMedicine({
         name,
         gap,
         dose: `${dose} ${measurement}`,
         doseQuantity,
+        lastTakenDose,
         notes,
-      });
+      })
     }
   }
 
@@ -42,6 +47,7 @@ export default function WorkDayItem({ addMedicine }) {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required={true}
             />
           </div>
           <div className="row my-2">
@@ -51,12 +57,21 @@ export default function WorkDayItem({ addMedicine }) {
               label="Intervalo de uso (em horas)"
               type="number"
               value={gap}
-              onChange={(e) => setGap(e.target.value)}
+              onChange={(e) => setGap(parseInt(e.target.value))}
+            />
+            <Input
+              className="col-12 col-md-3"
+              id="firstDose"
+              label="Data da primeira dose"
+              type="datetime-local"
+              min={new Date().toISOString().split("T")[0] + "T00:00"}
+              value={firstDose}
+              onChange={(e) => setFirstDose(e.target.value)}
             />
 
             <Select
               className="col-12 col-md-3"
-              id="gap"
+              id="measurement"
               label="Medida da dosagem"
               value={measurement}
               onChange={(e) => setMeasurement(e.target.value)}
@@ -98,7 +113,7 @@ export default function WorkDayItem({ addMedicine }) {
               btnClass="btn btn-primary ms-auto my-3"
               type="submit"
             >
-              <div style={{fontSize: 15}}> Adicionar Medicamento</div>
+              <div style={{ fontSize: 15 }}> Adicionar Medicamento</div>
             </FormButton>
           </div>
         </form>
