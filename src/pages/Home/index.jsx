@@ -65,13 +65,13 @@ export default function Home() {
       <Container>
         <Content>
           <div className="row pt-4">
-            <h1>Home</h1>
+            <h2>Painel de consultas</h2>
           </div>
 
           <hr />
 
           <div className="row">
-            <h3>Consultas esperando confirmação:</h3>
+            <h4>Consultas esperando confirmação:</h4>
 
             {
               appointmentsNotProcessed && appointmentsNotProcessed.filter((appointment) => !appointment.processed).map((appointment, index) => (

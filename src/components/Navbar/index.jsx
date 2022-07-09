@@ -29,17 +29,7 @@ export default function NavbarComponent() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <NavLink to="/" className="" ></NavLink>
-              <a className="nav-link" href="/">Home</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/">Link</a>
-            </li>
-          </ul>
-        </div>
+        
         <button className="btn btn-outline-dark float-right" type="button"
           onClick={logOut}
         >

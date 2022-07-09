@@ -4,15 +4,18 @@ import Modal from "react-modal";
 import handleAppointment from "../../api/doctor/handleAppointment";
 import MedicineItem from "./MedicineItem";
 
-
 const customStyles = {
   content: {
-    top: "50%",
+    width: "80%",
+    minHeight: "90%",
     left: "50%",
     right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
+    top: "50%",
     transform: "translate(-50%, -50%)",
+
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "#999",
   },
 };
 
@@ -32,9 +35,7 @@ export default function RegisterMedicines({ appointment }) {
     setIsOpen(true);
   }
 
-  function afterOpenModal() {
-
-  }
+  function afterOpenModal() {}
 
   function closeModal() {
     setIsOpen(false);
@@ -45,8 +46,7 @@ export default function RegisterMedicines({ appointment }) {
   }
 
   function handleSaveMedicines() {
-    handleAppointment(appointment, { medicines })
-      .then(() => closeModal())
+    handleAppointment(appointment, { medicines }).then(() => closeModal());
   }
 
   function removeMedicine(index) {
@@ -57,7 +57,11 @@ export default function RegisterMedicines({ appointment }) {
 
   return (
     <div>
-      <button className="btn btn-primary" onClick={openModal}>
+      <button
+        className="btn btn-primary"
+        onClick={openModal}
+        style={{ fontSize: 13 }}
+      >
         Ver Medicamentos
       </button>
       <Modal
@@ -66,10 +70,11 @@ export default function RegisterMedicines({ appointment }) {
         onRequestClose={closeModal}
         style={customStyles}
       >
+        <h5>Painel de Medicamentos</h5>
         <div className="row">
           <div className="form-group">
             <MedicineItem addMedicine={addMedicine} />
-            <table className="table table-striped table-hover">
+            <table className="table table-striped table-hover mt-3">
               <thead>
                 <tr>
                   <th scope="col">Nome</th>
@@ -103,13 +108,21 @@ export default function RegisterMedicines({ appointment }) {
             </table>
           </div>
         </div>
-        <button
-          onClick={handleSaveMedicines}
-        >
-          Salvar
-        </button>
+        <div className="row justify-content-end align-baseline mx-4 mt-3">
+          <button
+            onClick={closeModal}
+            className="btn btn-danger mx-3 col-12 col-md-2"
+          >
+            Cancelar
+          </button>
 
-        <button onClick={closeModal}>close</button>
+          <button
+            onClick={handleSaveMedicines}
+            className="btn btn-success col-12 col-md-2"
+          >
+            Salvar
+          </button>
+        </div>
       </Modal>
     </div>
   );
